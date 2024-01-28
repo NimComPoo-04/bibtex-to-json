@@ -38,29 +38,6 @@ int main(int argc, char *argv[])
 	while(current < source.length)
 	{
 		bibtex_t b = bibtex_tokenize(source, &current, &line);
-
-		/*
-		   fprintf(stderr, "Type: %d\n", b.type);
-		   fprintf(stderr, "Tag: %.*s\n", (int)b.tag.length, b.tag.value);
-
-		   fprintf(stderr, "Title: %.*s\n", (int)b.title.length, b.title.value);
-		   fprintf(stderr, "Author: %.*s\n", (int)b.author.length, b.author.value);
-		   fprintf(stderr, "Year: %d\n", b.year);
-		   fprintf(stderr, "Month: %d\n", b.month);
-		   fprintf(stderr, "Volume: %d\n", b.volume);
-		   fprintf(stderr, "Number: %d\n", b.number);
-		   fprintf(stderr, "Pages: %.*s\n", (int)b.pages.length, b.pages.value);
-		   fprintf(stderr, "Editor: %.*s\n", (int)b.editor.length, b.editor.value);
-		   fprintf(stderr, "Series: %.*s\n", (int)b.series.length, b.series.value);
-		   fprintf(stderr, "Organisation: %.*s\n", (int)b.organisation.length, b.organisation.value);
-		   fprintf(stderr, "Journal: %.*s\n", (int)b.journal.length, b.journal.value);
-		   fprintf(stderr, "Publisher: %.*s\n", (int)b.publisher.length, b.publisher.value);
-		   fprintf(stderr, "Address: %.*s\n", (int)b.address.length, b.address.value);
-		   fprintf(stderr, "HowPublished: %.*s\n", (int)b.howPublished.length, b.howPublished.value);
-		   fprintf(stderr, "BookTitle: %.*s\n", (int)b.bookTitle.length, b.bookTitle.value);
-		   fprintf(stderr, "Notes: %.*s\n", (int)b.notes.length, b.notes.value);
-
-*/
 		validate_bibtex(&b);
 		generate_json(&b);
 	}
