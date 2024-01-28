@@ -12,4 +12,6 @@ typedef struct
 	size_t length;
 } string_t;
 
+int nocasestrncmp(const char *this, const char *other, size_t len);
+
 #endif
