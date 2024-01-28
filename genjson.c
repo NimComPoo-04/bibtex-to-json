@@ -4,6 +4,38 @@
 // make this variable non be global.
 extern string_t Types[];
 
+static int toMonthNum(string_t str)
+{
+	// If it is a number
+	char *endp = str.value + str.length;
+	int value = strtol(str.value, &endp, 10);
+
+	if(value > 0 && value <= 12)
+		return value;
+
+	// If its not a number
+	static string_t Month[] = {
+              {"January", 7}, 
+              {"February", 8},
+              {"March", 5},
+              {"April", 5},
+              {"May", 3},
+              {"June", 4},
+              {"July", 5},
+              {"August", 6},
+              {"September", 9},
+              {"October", 7},
+              {"November", 8},
+              {"December", 8}};
+
+	for(int i = 0; i < (int)(sizeof(Month)/sizeof(Month[0])); i++)
+		if(Month[i].length == str.length &&
+				nocasestrncmp(str.value, Types[i].value, str.length) == 0)
+			return i + 1;
+
+	return 0;
+};
+
 void generate_json(bibtex_t *b)
 {
 	printf("{\n");
@@ -15,8 +47,16 @@ void generate_json(bibtex_t *b)
 
 	printf("\t, year: %d\n", b->year);
 
-	if(b->month != 0)
-		printf("\t, month: %d\n", b->month);
+	if(b->month.length != 0)
+	{
+		int value = toMonthNum(b->month);
+		if(value > 0)
+			printf("\t, month: %d\n", value);
+		else if(value == 0)
+			printf("\t, month: %.*s\n", (int)b->month.length, b->month.value);
+		else
+			fprintf(stderr, "Invalid month, skipping.");
+	}
 
 	if(b->volume != 0)
 	        printf("\t, volume: %d\n", b->volume);
