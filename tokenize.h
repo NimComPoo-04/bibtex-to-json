@@ -30,7 +30,7 @@ typedef struct
 	string_t title;
 	string_t author;	// this is a bit complicated, we will deal with this later.
 	int year;
-	int month;
+	string_t month;
 	int volume;
 	int number;
 	string_t pages;

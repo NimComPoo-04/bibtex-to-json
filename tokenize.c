@@ -165,33 +165,6 @@ static void load_number(string_t source, size_t *current, size_t *line, int *dat
 	*data = read_number(source, current, line);
 }
 
-static int toMonth(string_t source, size_t *current, size_t *line)
-{
-	string_t str = read_string(source, current, line);
-
-	static string_t Month[] = {
-              {"January", 7}, 
-              {"February", 8},
-              {"March", 5},
-              {"April", 5},
-              {"May", 3},
-              {"June", 4},
-              {"July", 5},
-              {"August", 6},
-              {"September", 9},
-              {"October", 7},
-              {"November", 8},
-              {"December", 8}};
-
-	for(int i = 0; i < (int)(sizeof(Month)/sizeof(Month[0])); i++)
-		if(Month[i].length == str.length &&
-				nocasestrncmp(str.value, Types[i].value, str.length) == 0)
-			return i + 1;
-
-	bibtex_error("Month Is not correct.", *current, *line);
-	return 0;
-};
-
 bibtex_t bibtex_tokenize(string_t source, size_t *current, size_t *line)
 {
 	bibtex_t b = {0};
@@ -216,7 +189,7 @@ bibtex_t bibtex_tokenize(string_t source, size_t *current, size_t *line)
 		string_t key = read_word(source, current, line);	 // word
 		search_till(source, current, line, "=");
 
-		// printf("%.*s\n", key.length, key.value);
+	//	printf("%.*s\n", key.length, key.value);
 
 		// FIXME(NimComPoo): Not a good way to do this, just something for now 
 		// does not account for errors if they go beyond the first three
@@ -241,6 +214,7 @@ bibtex_t bibtex_tokenize(string_t source, size_t *current, size_t *line)
 			case ('a' << 16) | ('d' << 8) | 'd': load_string(source, current, line, &b.address); break;
 			case ('h' << 16) | ('o' << 8) | 'w': load_string(source, current, line, &b.howPublished); break;
 			case ('b' << 16) | ('o' << 8) | 'o': load_string(source, current, line, &b.bookTitle); break;
+			case ('m' << 16) | ('o' << 8) | 'n': load_string(source, current, line, &b.month); break;
 
 			// For the time being considering abstract to be note
 			case ('a' << 16) | ('b' << 8) | 's': 
@@ -251,9 +225,13 @@ bibtex_t bibtex_tokenize(string_t source, size_t *current, size_t *line)
 			case ('v' << 16) | ('o' << 8) | 'l': load_number(source, current, line, &b.volume); break;
 			case ('n' << 16) | ('u' << 8) | 'm': load_number(source, current, line, &b.number); break;
 
-			case ('m' << 16) | ('o' << 8) | 'n': b.month = toMonth(source, current, line); break;
-
-			default: continue;
+			default:
+			     {
+				     fprintf(stderr, "Unrecognized Key: %.*s\n", (int)key.length, key.value);
+				     string_t value = {0};
+				     load_string(source, current, line, &value);
+			     }
+			     continue;
 		}
 	}
 
