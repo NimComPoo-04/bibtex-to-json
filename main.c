@@ -24,7 +24,7 @@ static string_t read_file_source_code(const char *name)
 
 int main(int argc, char *argv[])
 {
-	if(argc < 0)
+	if(argc < 2)
 	{
 		fprintf(stderr, "Usage: ./%s [filename]\n", argv[0]);
 		return 64;
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	while(current < source.length)
 	{
 		bibtex_t b = bibtex_tokenize(source, &current, &line);
-		validate_bibtex(&b);
+	//	validate_bibtex(&b);
 		generate_json(&b);
 	}
 

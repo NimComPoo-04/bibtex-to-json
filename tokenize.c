@@ -186,6 +186,10 @@ bibtex_t bibtex_tokenize(string_t source, size_t *current, size_t *line)
 
 	while((k = search_till(source, current, line, ",}")) == ',')
 	{
+		skip_space(source, current, line);
+		if(source.value[*current] == '}')
+			break;
+
 		string_t key = read_word(source, current, line);	 // word
 		search_till(source, current, line, "=");
 

@@ -1,0 +1,5 @@
+*.bib
+*.json
+node_modules
+*.o
+b2j
