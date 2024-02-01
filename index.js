@@ -24,6 +24,9 @@ let STRresearchPublication = ''
 let STRcontributionAuthors = ''
 
 r.on('end', () => {
+
+	console.log(data)
+
 	const bibJSON = bibtex.BibtexParser.parseToJSON(data);
 
 	bibJSON.forEach((value) => {
@@ -80,13 +83,13 @@ function parse_authors(a) {
 		let [familyName, restOfName] = search.split(',')
 		let givenNames = restOfName?.split(' ').filter(a => a)
 
-		search = givenNames.toString()+familyName;
+		search = givenNames?.toString()+familyName;
 
 		if(givenNames?.length <= 0) {
 			console.log(`${a} Too Few names for a person`)
 			process.exit(1)
 		}
-		if(givenNames.length > 16) {
+		if(givenNames?.length > 16) {
 			console.log(`${a} Too many names for a single person`)
 			process.exit(1)
 		}
