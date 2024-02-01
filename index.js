@@ -34,28 +34,42 @@ r.on('end', () => {
 		value._type = 'researchPublication'
 
 		const authors_and_search = parse_authors(value.author)
-		value.authors = authors_and_search[0]
-		value.year = parseInt(value.year)
-		value.volume = (value.volume == undefined ? undefined : parseInt(value.volume))
-		value.number = (value.number == undefined ? undefined : parseInt(value.number))
-
-		// year-Author0FamilyName-(etal|Author1FamilyName)-title
-
 		let auth0 = contributionAuthors.get(authors_and_search[1][0])?.personName.familyName
 		let auth1 = contributionAuthors.size > 2 ? 'etal' :
 			contributionAuthors.get(authors_and_search[1][1])?.personName.familyName
 
-		value.citationKey = {
-			_type: 'slug',
-			current: `${value.year}-${auth0}-${auth1}-${value.title}`
+		let obj = {
+			_type: 'researchPublication',
+			citationKey: {
+				_type: 'slug',
+				current: `${value.year}-${auth0}-${auth1}-${value.title}`
+			},
+			title: value.title,
+			authors: authors_and_search[0],
+			year: parseInt(value.year),
+			school: value.school,
+			publicationType: value.type,
+			month: to_month(value.month),
+			volume: (value.volume == undefined ? undefined : parseInt(value.volume)),
+			number: (value.number == undefined ? undefined : parseInt(value.number)),
+			pages: value.pages,
+			editor: value.editor,
+			edition: value.edition,
+			series: value.series,
+			organisation: value.organization || value.organisation,
+			institution: value.institution,
+			journal: value.journal,
+			publisher: value.publisher,
+			address: value.address,
+			howPublished: value.howPublished || value.howpublished,
+			bookTitle: value.booktitle || value.bookTitle,
+			notes: value.notes
 		}
 
-		// Values not required
-		value.raw = undefined
-		value.author = undefined
-		value.id = undefined
+		// year-Author0FamilyName-(etal|Author1FamilyName)-title
 
-		STRresearchPublication += JSON.stringify(value) + '\n'
+		// Values not required
+		STRresearchPublication += JSON.stringify(obj) + '\n'
 	})
 
 	contributionAuthors.forEach((a)=>{
@@ -128,27 +142,26 @@ function parse_authors(a) {
 
 // Converts Some data to month form
 function to_month(a) {
-	if(a === undefined) return undefined
-
-	const t = parseInt(a)
-	if(t !== 0/0)
-		return t
-
-	let k = a.toLowerCase()
-	let d = {
-		'january': 1, 'jan': 1, 
-		'february': 2, 'feb': 2,
-		'march': 3, 'mar': 3,
-		'april': 4, 'apr': 4,
-		'may': 5, 'may': 5,
-		'june': 6, 'jun': 6,
-		'july': 7, 'jul': 7,
-		'august': 8, 'aug': 8,
-		'september': 9, 'sep': 9,
-		'october': 10, 'oct': 10,
-		'november': 11, 'nov': 11,
-		'december': 12, 'dec': 12
-	}[k]
-
-	return d === undefined ? a : d
+	if(parseInt(a))
+		return parseInt(a)
+	else
+	{
+		switch(a?.toLowerCase()?.substring(0, 3))
+		{
+			case 'jan': return 1;
+			case 'feb': return 2;
+			case 'mar': return 3;
+			case 'apr': return 4;
+			case 'may': return 5;
+			case 'jun': return 6;
+			case 'jul': return 7;
+			case 'aug': return 8;
+			case 'sep': return 9;
+			case 'oct': return 10;
+			case 'nov': return 11;
+			case 'dec': return 12;
+			default:
+				return undefined;
+		}
+	}
 }
